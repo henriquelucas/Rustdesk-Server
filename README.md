@@ -56,10 +56,10 @@ Mais se você é do tipo, não quero preocupações na minha e usa um servidor e
 Se sim, então acessa o teu rooteador e libera as portas apontando pra teu servidor aonde o rustdesk foi instalado:
 
 🔐 hbbs (Servidor de Registro/Mediação)
-21114 (TCP): Usada para o console web, somente disponível na versão Pro.
-21115 (TCP): Usada para o teste de tipo de NAT (verifica como está configurada sua rede).
-21116 (TCP/UDP):UDP: Usado para registro de ID e serviço de heartbeat (verifica se o cliente ainda está online). TCP: Usado para perfuração de NAT (hole punching) e serviço de conexão entre cliente e servidor.
-21118 (TCP): Usada para oferecer suporte a clientes via navegador (web).
+- 21114 (TCP): Usada para o console web, somente disponível na versão Pro.
+- 21115 (TCP): Usada para o teste de tipo de NAT (verifica como está configurada sua rede).
+- 21116 (TCP/UDP):UDP: Usado para registro de ID e serviço de heartbeat (verifica se o cliente ainda está online). TCP: Usado para perfuração de NAT (hole punching) e serviço de conexão entre cliente e servidor.
+- 21118 (TCP): Usada para oferecer suporte a clientes via navegador (web).
 🔁 hbbr (Servidor de Revezamento/Relay)
 21117 (TCP): Usada para o serviço de revezamento (relay), quando a conexão direta entre clientes não é possível.
 21119 (TCP): Também usada para dar suporte a clientes via navegador (web).
