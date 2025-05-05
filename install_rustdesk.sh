@@ -56,4 +56,15 @@ sleep 5
 echo "🔑 Exibindo ID e chave (localizados em ./data/id_ed25519*):"
 ls -l ./data/id_ed25519* 2>/dev/null || echo "❌ ID/Chave ainda não gerados. Aguarde mais alguns segundos e tente novamente."
 
+echo
+echo "🔐 Lendo chave pública..."
+KEY=$(cat ./data/id_ed25519.pub 2>/dev/null || echo "Chave não encontrada")
+echo "🔑 KEY:"
+echo "$KEY"
+
+ID=$(echo "$KEY" | cut -d' ' -f3)
+echo
+echo "🆔 ID (use no cliente):"
+echo "$ID"
+
 echo "✅ Instalação concluída com sucesso!"
