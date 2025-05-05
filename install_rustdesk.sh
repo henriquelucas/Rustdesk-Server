@@ -67,4 +67,5 @@ echo
 echo "🆔 ID (use no cliente):"
 echo "$ID"
 
+echo "Liberar as Portas: 21114 (TCP), 21115 (TCP), 21116 (TCP/UDP), 21118 (TCP), 21117 (TCP), 21119 (TCP)"
 echo "✅ Instalação concluída com sucesso!"
