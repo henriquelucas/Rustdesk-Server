@@ -24,11 +24,12 @@ mkdir -p rustdesk-server
 cd rustdesk-server
 
 cat <<EOF > docker-compose.yml
+version: "3"
 services:
   hbbs:
     container_name: hbbs
-    image: docker.io/rustdesk/rustdesk-server-pro:latest
-    command: hbbs
+    image: rustdesk/rustdesk-server:latest
+    command: hbbs -r 0.0.0.0:21117
     volumes:
       - ./data:/root
     network_mode: "host"
@@ -38,7 +39,7 @@ services:
 
   hbbr:
     container_name: hbbr
-    image: docker.io/rustdesk/rustdesk-server-pro:latest
+    image: rustdesk/rustdesk-server:latest
     command: hbbr
     volumes:
       - ./data:/root
@@ -55,4 +56,4 @@ sleep 5
 echo "🔑 Exibindo ID e chave (localizados em ./data/id_ed25519*):"
 ls -l ./data/id_ed25519* 2>/dev/null || echo "❌ ID/Chave ainda não gerados. Aguarde mais alguns segundos e tente novamente."
 
-echo "✅ Instalação completa."
+echo "✅ Instalação concluída com sucesso!"
