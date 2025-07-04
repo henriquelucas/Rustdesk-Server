@@ -1,71 +1,75 @@
 #!/bin/bash
 
-set -e
+# ================================
+# Instalação do RustDesk Server
+# ================================
 
-echo "🔍 Verificando se o Docker está instalado..."
-if ! command -v docker &> /dev/null; then
-    echo "🚀 Docker não encontrado. Instalando..."
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    rm get-docker.sh
-    sudo usermod -aG docker $USER
-    echo "⚠️ Docker instalado. É necessário reiniciar a sessão para aplicar permissões."
+INSTALL_DIR="/opt/rustdeskserver"
+DATA_DIR="$INSTALL_DIR/data"
+COMPOSE_FILE="$INSTALL_DIR/docker-compose.yml"
+
+# Solicita o IP público ou domínio
+read -p "Digite o IP público ou domínio do servidor: " PUBLIC_IP
+
+# Valida entrada simples
+if [[ -z "$PUBLIC_IP" ]]; then
+    echo "IP público não informado. Encerrando."
     exit 1
 fi
 
-if ! command -v docker-compose &> /dev/null; then
-    echo "⚙️ Instalando docker-compose..."
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
+# Criação da estrutura de diretórios
+echo "➡️ Criando diretórios em $INSTALL_DIR..."
+mkdir -p "$DATA_DIR"
+cd "$INSTALL_DIR" || exit 1
+
+# Gerar chave ED25519 (servidor ID/key)
+if [ ! -f "$DATA_DIR/id_ed25519" ]; then
+    echo "🔐 Gerando chave ED25519..."
+    ssh-keygen -t ed25519 -f "$DATA_DIR/id_ed25519" -N ""
+else
+    echo "🔐 Chave já existente em $DATA_DIR/id_ed25519, pulando geração..."
 fi
 
-echo "📁 Criando arquivos necessários..."
-mkdir -p rustdesk-server
-cd rustdesk-server
+# Criar docker-compose.yml
+echo "📄 Criando arquivo docker-compose.yml..."
+cat > "$COMPOSE_FILE" <<EOF
+version: '3.8'
 
-cat <<EOF > docker-compose.yml
-version: "3"
 services:
   hbbs:
-    container_name: hbbs
     image: rustdesk/rustdesk-server:latest
-    command: hbbs -r 0.0.0.0:21117
+    container_name: hbbs
+    command: hbbs -r $PUBLIC_IP:21117 -k /data/id_ed25519
     volumes:
-      - ./data:/root
-    network_mode: "host"
-    depends_on:
-      - hbbr
+      - ./data:/data
+    ports:
+      - "21115:21115"
+      - "21116:21116"
+      - "21116:21116/udp"
+      - "21118:21118"
     restart: unless-stopped
 
   hbbr:
-    container_name: hbbr
     image: rustdesk/rustdesk-server:latest
-    command: hbbr
+    container_name: hbbr
+    command: hbbr -k /data/id_ed25519
     volumes:
-      - ./data:/root
-    network_mode: "host"
+      - ./data:/data
+    ports:
+      - "21117:21117"
     restart: unless-stopped
 EOF
 
-echo "⬇️ Iniciando containers..."
-docker-compose up -d
+# Iniciar containers
+echo "🚀 Iniciando containers Docker..."
+docker compose -f "$COMPOSE_FILE" up -d
 
-echo "⏳ Aguardando inicialização dos serviços..."
-sleep 5
-
-echo "🔑 Exibindo ID e chave (localizados em ./data/id_ed25519*):"
-ls -l ./data/id_ed25519* 2>/dev/null || echo "❌ ID/Chave ainda não gerados. Aguarde mais alguns segundos e tente novamente."
-
-echo
-echo "🔐 Lendo chave pública..."
-KEY=$(cat ./data/id_ed25519.pub 2>/dev/null || echo "Chave não encontrada")
-echo "🔑 KEY:"
-echo "$KEY"
-
-ID=$(echo "$KEY" | cut -d' ' -f3)
-echo
-echo "🆔 ID (use no cliente):"
-echo "$ID"
-
-echo "Liberar as Portas: 21114 (TCP), 21115 (TCP), 21116 (TCP/UDP), 21118 (TCP), 21117 (TCP), 21119 (TCP)"
-echo "✅ Instalação concluída com sucesso!"
+# Mostrar saída final
+echo "✅ Instalação concluída!"
+echo "📁 Local de instalação: $INSTALL_DIR"
+echo "🔑 Chave pública para clientes: $DATA_DIR/id_ed25519.pub"
+echo ""
+echo "👉 Configure os clientes RustDesk com:"
+echo "   - ID Server: $PUBLIC_IP"
+echo "   - Relay Server: $PUBLIC_IP"
+echo "   - Key: (conteúdo do arquivo id_ed25519.pub)"
