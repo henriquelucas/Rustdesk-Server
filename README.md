@@ -30,10 +30,8 @@ chmod +x install_rustdesk.sh
 
 ## 📂 Estrutura Criada
 
-Após a execução do script, será criado um diretório `rustdesk-server` com o seguinte conteúdo:
+Após a execução do script, será criado um diretório `/opt/rustdesk-server` com o seguinte conteúdo:
 
-- `docker-compose.yml`: configuração do servidor RustDesk
-- `data/`: pasta persistente onde são salvos os arquivos de chave e ID
 
 ---
 
