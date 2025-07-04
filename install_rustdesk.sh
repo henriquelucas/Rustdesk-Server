@@ -65,11 +65,22 @@ echo "🚀 Iniciando containers Docker..."
 docker compose -f "$COMPOSE_FILE" up -d
 
 # Mostrar saída final
+echo ""
 echo "✅ Instalação concluída!"
 echo "📁 Local de instalação: $INSTALL_DIR"
-echo "🔑 Chave pública para clientes: $DATA_DIR/id_ed25519.pub"
+echo "🔑 Chave pública para clientes:"
+
+# Exibe a chave no terminal
+if [ -f "$DATA_DIR/id_ed25519.pub" ]; then
+    echo ""
+    cat "$DATA_DIR/id_ed25519.pub"
+    echo ""
+else
+    echo "❌ Erro: chave pública não encontrada!"
+fi
+
 echo ""
 echo "👉 Configure os clientes RustDesk com:"
 echo "   - ID Server: $PUBLIC_IP"
 echo "   - Relay Server: $PUBLIC_IP"
-echo "   - Key: (conteúdo do arquivo id_ed25519.pub)"
+echo "   - Key: (conforme acima)"
