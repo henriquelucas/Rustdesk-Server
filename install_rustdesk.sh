@@ -31,18 +31,18 @@ services:
   hbbs:
     image: rustdesk/rustdesk-server:latest
     container_name: hbbs
-    command: hbbs -r $PUBLIC_IP:21117 -k /data/id_ed25519
+    command: hbbs -r $PUBLIC_IP:21117
     volumes:
-      - ./data:/data
+      - ./data:/root
     network_mode: "host"
     restart: unless-stopped
 
   hbbr:
     image: rustdesk/rustdesk-server:latest
     container_name: hbbr
-    command: hbbr -k /data/id_ed25519
+    command: hbbr
     volumes:
-      - ./data:/data
+      - ./data:/root
     network_mode: "host"
     restart: unless-stopped
 EOF
@@ -52,7 +52,7 @@ echo "🚀 Iniciando containers Docker..."
 docker compose -f "$COMPOSE_FILE" up -d
 
 # Aguarda geração automática das chaves pelo RustDesk
-echo "⏳ Aguardando geração automática das chaves pelo RustDesk (alguns segundos)..."
+echo "⏳ Aguardando geração automática das chaves pelo RustDesk (10s)..."
 sleep 10
 
 # Exibir localização das chaves
