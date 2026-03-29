@@ -50,8 +50,7 @@ ls -l rustdesk-server/data/id_ed25519*
 Com o servidor RustDesk em execução, você pode configurar clientes apontando para o seu IP com o ID e a chave privada gerados.
 Mais se você é do tipo, não quero preocupações na minha e usa um servidor em nuvem, abre as portas também ou solicita ao suporte pra abrirem pra você.
 
-## 🔑 Me diz você é um vida LOKA e ta usando um servidor próprio hospedado em sua empresa, casa ou barraco?
-Se sim, então acessa o teu rooteador e libera as portas apontando pra teu servidor aonde o rustdesk foi instalado:
+## 🔑 Liberar as portas:
 
 🔐 hbbs (Servidor de Registro/Mediação)
 - 21114 (TCP): Usada para o console web, somente disponível na versão Pro.
